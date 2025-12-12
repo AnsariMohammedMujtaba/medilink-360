@@ -30,35 +30,52 @@ let allFilterData = global.allFilterData;
 
 app.use(cors());
 
-// --- NEW: Serve static files like style.css and navbar.html ---
+// --- Serve static files like style.css and navbar.html ---
 app.use(express.static(path.join(__dirname)));
 
-// --- LOADER 1: Your interactions CSV ---
-fs.createReadStream('drug-data.csv')
-  .pipe(csv())
-  .on('data', (row) => {
-    interactions.push(row);
-    if (row['Drug 1']) uniqueDrugNames.add(row['Drug 1'].trim().toLowerCase());
-    if (row['Drug 2']) uniqueDrugNames.add(row['Drug 2'].trim().toLowerCase());
-  })
-  .on('end', () => {
-    uniqueDrugNames = [...uniqueDrugNames].sort();
-    console.log(`drug-data.csv successfully loaded. ${interactions.length} records found.`);
-    checkIfServerReady();
-  });
+// --- Load data from JSON files (much faster than CSV) ---
+// Only load if not already loaded (for serverless caching)
+if (!global.isDataReady && !global.isLoading) {
+  global.isLoading = true;
+  console.log('Loading data from JSON files...');
 
-// --- LOADER 2: Your drug type CSV ---
-fs.createReadStream('Drugs-Type.csv')
-  .pipe(csv())
-  .on('data', (row) => {
-    if (row.Type) {
-      drugDetails.push(row);
+  try {
+    const startTime = Date.now();
 
-      const type = (row.Type || '').toLowerCase().trim();
+    // Load interactions
+    const interactionsData = JSON.parse(
+      fs.readFileSync(path.join(__dirname, 'data', 'interactions.json'), 'utf8')
+    );
+    global.interactions = interactionsData;
+    interactions = global.interactions;
+
+    // Extract unique drug names
+    const drugNamesSet = new Set();
+    interactionsData.forEach(row => {
+      if (row['Drug 1']) drugNamesSet.add(row['Drug 1'].trim().toLowerCase());
+      if (row['Drug 2']) drugNamesSet.add(row['Drug 2'].trim().toLowerCase());
+    });
+    global.uniqueDrugNames = [...drugNamesSet].sort();
+    uniqueDrugNames = global.uniqueDrugNames;
+    console.log(`✓ Loaded ${interactions.length} drug interactions`);
+
+    // Load drug details
+    const drugDetailsData = JSON.parse(
+      fs.readFileSync(path.join(__dirname, 'data', 'drug-details.json'), 'utf8')
+    );
+    global.drugDetails = drugDetailsData;
+    drugDetails = global.drugDetails;
+
+    // Process filter data
+    const filterData = {};
+    drugDetailsData.forEach(row => {
+      if (!row.Type) return;
+
+      const type = row.Type.toLowerCase().trim();
       if (!type) return;
 
-      if (!allFilterData[type]) {
-        allFilterData[type] = {
+      if (!filterData[type]) {
+        filterData[type] = {
           brandNames: new Set(),
           genericNames: new Set(),
           manufacturers: new Set()
@@ -71,64 +88,55 @@ fs.createReadStream('Drugs-Type.csv')
         }
       };
 
-      addToSet(allFilterData[type].brandNames, row['Brand-Name']);
-      addToSet(allFilterData[type].genericNames, row['GenericName']);
-      addToSet(allFilterData[type].manufacturers, row['Manufacturer']);
-    }
-  })
-  .on('end', () => {
-    console.log(`Drugs-Type.csv successfully loaded. ${drugDetails.length} records found.`);
-    for (const type in allFilterData) {
-      allFilterData[type].brandNames = [...allFilterData[type].brandNames].sort();
-      allFilterData[type].genericNames = [...allFilterData[type].genericNames].sort();
-      allFilterData[type].manufacturers = [...allFilterData[type].manufacturers].sort();
-    }
-    console.log(`Filter data processed for ${Object.keys(allFilterData).length} types.`);
-    checkIfServerReady();
-  });
-
-// --- LOADER 3: Your contraindication CSV ---
-fs.createReadStream('drug-contraindication.csv')
-  .pipe(csv())
-  .on('data', (row) => {
-    contraindicationData.push(row);
-
-    const terms = (row.contraindications || '').toLowerCase();
-
-    const splitTerms = terms.split(/[,;]/);
-
-    splitTerms.forEach(term => {
-      const cleanedTerm = term.trim();
-      if (cleanedTerm && cleanedTerm.length > 2 && cleanedTerm !== 'false') {
-        contraindicationTerms.add(cleanedTerm);
-      }
+      addToSet(filterData[type].brandNames, row['Brand-Name']);
+      addToSet(filterData[type].genericNames, row['GenericName']);
+      addToSet(filterData[type].manufacturers, row['Manufacturer']);
     });
-  })
-  .on('end', () => {
-    console.log(`drug-contraindication.csv successfully loaded. ${contraindicationData.length} records found.`);
-    contraindicationTerms = [...contraindicationTerms].sort();
-    console.log(`Found ${contraindicationTerms.length} unique contraindication terms.`);
-    checkIfServerReady();
-  });
 
-// --- Helper to log server ready ---
-let filesLoaded = 0;
-function checkIfServerReady() {
-  filesLoaded++;
-  if (filesLoaded === 3) { // Now waiting for 3 files
+    // Convert Sets to sorted arrays
+    for (const type in filterData) {
+      filterData[type].brandNames = [...filterData[type].brandNames].sort();
+      filterData[type].genericNames = [...filterData[type].genericNames].sort();
+      filterData[type].manufacturers = [...filterData[type].manufacturers].sort();
+    }
+    global.allFilterData = filterData;
+    allFilterData = global.allFilterData;
+    console.log(`✓ Loaded ${drugDetails.length} drug details, ${Object.keys(allFilterData).length} types`);
+
+    // Load contraindications
+    const contraindicationsData = JSON.parse(
+      fs.readFileSync(path.join(__dirname, 'data', 'contraindications.json'), 'utf8')
+    );
+    global.contraindicationData = contraindicationsData;
+    contraindicationData = global.contraindicationData;
+
+    // Extract contraindication terms
+    const termsSet = new Set();
+    contraindicationsData.forEach(row => {
+      const terms = (row.contraindications || '').toLowerCase();
+      const splitTerms = terms.split(/[,;]/);
+      splitTerms.forEach(term => {
+        const cleanedTerm = term.trim();
+        if (cleanedTerm && cleanedTerm.length > 2 && cleanedTerm !== 'false') {
+          termsSet.add(cleanedTerm);
+        }
+      });
+    });
+    global.contraindicationTerms = [...termsSet].sort();
+    contraindicationTerms = global.contraindicationTerms;
+    console.log(`✓ Loaded ${contraindicationData.length} contraindications, ${contraindicationTerms.length} unique terms`);
+
     global.isDataReady = true;
     global.isLoading = false;
-    console.log(`All CSV files loaded. Server is ready!`);
+
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+    console.log(`✅ All data loaded successfully in ${duration}s`);
     console.log(`Open http://localhost:${port} in your browser.`);
+
+  } catch (error) {
+    console.error('❌ Error loading JSON files:', error);
+    global.isLoading = false;
   }
-}
-
-// --- Load CSV files only if not already loaded (for serverless caching) ---
-if (!global.isDataReady && !global.isLoading) {
-  global.isLoading = true;
-  console.log('Starting CSV data load...');
-
-  // CSV loading code will execute from the existing code below
 }
 
 // --- Health Check Endpoint ---
