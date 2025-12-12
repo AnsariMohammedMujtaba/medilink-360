@@ -1,307 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contraindication Search - MediLink360</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contraindication Search - MediLink360</title>
 
-    <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <script src="navbar.js"></script>
-  </head>
-  <body>
-    <div id="navbar-placeholder"></div>
+  <link rel="stylesheet" href="style.css" />
 
-    <main>
-      <div class="container">
-        <h1 class="page-title">Contraindication Search</h1>
-        <p style="font-size: 1.125rem; color: var(--color-gray-600); margin-top: -1.5rem; margin-bottom: 1.5rem;">
-          Select a contraindication, then select a drug to see details.
-        </p>
+  <script src="navbar.js"></script>
+</head>
 
-        <div class="card" style="margin-bottom: 2rem">
-          <div class="grid-container grid-cols-2">
-            <div class="form-group">
-              <label for="contra-input" class="form-label"
-                >1. Select Contraindication</label
-              >
-              <input
-                type="text"
-                id="contra-input"
-                placeholder="Start typing (e.g., pregnancy)"
-                class="form-input"
-                autocomplete="off"
-              />
-              <div
-                id="contra-suggestions"
-                class="suggestions-box hidden"
-                style="z-index: 20"
-              ></div>
-            </div>
+<body>
+  <div id="navbar-placeholder"></div>
 
-            <div class="form-group">
-              <label for="drug-input" class="form-label"
-                >2. Select Drug Name</label
-              >
-              <input
-                type="text"
-                id="drug-input"
-                placeholder="First, select a contraindication"
-                class="form-input"
-                autocomplete="off"
-                disabled
-              />
-              <div
-                id="drug-suggestions"
-                class="suggestions-box hidden"
-                style="z-index: 10"
-              ></div>
-            </div>
+  <main>
+    <div class="container">
+      <h1 class="page-title">Contraindication Search</h1>
+      <p style="font-size: 1.125rem; color: var(--color-gray-600); margin-top: -1.5rem; margin-bottom: 1.5rem;">
+        Select a contraindication, then select a drug to see details.
+      </p>
+
+      <div class="card" style="margin-bottom: 2rem">
+        <div class="grid-container grid-cols-2">
+          <div class="form-group">
+            <label for="contra-input" class="form-label">1. Select Contraindication</label>
+            <input type="text" id="contra-input" placeholder="Start typing (e.g., pregnancy)" class="form-input"
+              autocomplete="off" />
+            <div id="contra-suggestions" class="suggestions-box hidden" style="z-index: 20"></div>
           </div>
 
-          <div style="text-align: right; margin-top: 1.5rem">
-            <button id="search-btn" class="btn btn-primary" disabled>
-              Search
-            </button>
+          <div class="form-group">
+            <label for="drug-input" class="form-label">2. Select Drug Name</label>
+            <input type="text" id="drug-input" placeholder="First, select a contraindication" class="form-input"
+              autocomplete="off" disabled />
+            <div id="drug-suggestions" class="suggestions-box hidden" style="z-index: 10"></div>
           </div>
         </div>
 
-        <div id="loading" class="loading-spinner hidden">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            ></circle>
-            <path
-              class="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-          <p style="margin-top: 1rem">Searching...</p>
-        </div>
-
-        <div id="results-container" style="display: grid; gap: 1.5rem"></div>
-
-        <div id="no-results" class="no-results hidden">
-          <h2 class="card-title">No Records Found</h2>
-          <p>No drugs were found matching that combination.</p>
+        <div style="text-align: right; margin-top: 1.5rem">
+          <button id="search-btn" class="btn btn-primary" disabled>
+            Search
+          </button>
         </div>
       </div>
-    </main>
 
-    <script>
-      fetch("navbar.html")
-        .then((res) => res.text())
-        .then((data) => {
-          document.getElementById("navbar-placeholder").innerHTML = data;
-        })
-        .then(() => {
-          initNavbar();
-          document.getElementById("nav-contraindications")?.classList.add("active");
-          document.getElementById("mobile-nav-contraindications")?.classList.add("active");
-        });
-    </script>
+      <div id="loading" class="loading-spinner hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+          </path>
+        </svg>
+        <p style="margin-top: 1rem">Searching...</p>
+      </div>
 
-    <script>
-      // Get elements
-      const contraInput = document.getElementById("contra-input");
-      const drugInput = document.getElementById("drug-input");
-      const searchBtn = document.getElementById("search-btn");
-      const loadingDiv = document.getElementById("loading");
-      const resultsContainer = document.getElementById("results-container");
-      const noResultsDiv = document.getElementById("no-results");
-      const contraSuggestions = document.getElementById("contra-suggestions");
-      const drugSuggestions = document.getElementById("drug-suggestions");
+      <div id="results-container" style="display: grid; gap: 1.5rem"></div>
 
-      // --- Event Listeners ---
-      searchBtn.addEventListener("click", runSearch);
+      <div id="no-results" class="no-results hidden">
+        <h2 class="card-title">No Records Found</h2>
+        <p>No drugs were found matching that combination.</p>
+      </div>
+    </div>
+  </main>
 
-      contraInput.addEventListener("input", () =>
-        handleContraType(contraInput.value)
-      );
-      drugInput.addEventListener("input", () => handleDrugType(drugInput.value));
-
-      drugInput.addEventListener("keyup", (e) => {
-        if (e.key === "Enter") {
-          runSearch();
-        }
+  <script>
+    fetch("navbar.html")
+      .then((res) => res.text())
+      .then((data) => {
+        document.getElementById("navbar-placeholder").innerHTML = data;
+      })
+      .then(() => {
+        initNavbar();
+        document.getElementById("nav-contraindications")?.classList.add("active");
+        document.getElementById("mobile-nav-contraindications")?.classList.add("active");
       });
+  </script>
 
-      document.addEventListener("click", (e) => {
-        if (!contraInput.contains(e.target))
-          contraSuggestions.classList.add("hidden");
-        if (!drugInput.contains(e.target))
-          drugSuggestions.classList.add("hidden");
+  <script>
+    // Get elements
+    const contraInput = document.getElementById("contra-input");
+    const drugInput = document.getElementById("drug-input");
+    const searchBtn = document.getElementById("search-btn");
+    const loadingDiv = document.getElementById("loading");
+    const resultsContainer = document.getElementById("results-container");
+    const noResultsDiv = document.getElementById("no-results");
+    const contraSuggestions = document.getElementById("contra-suggestions");
+    const drugSuggestions = document.getElementById("drug-suggestions");
+
+    // --- Event Listeners ---
+    searchBtn.addEventListener("click", runSearch);
+
+    contraInput.addEventListener("input", () =>
+      handleContraType(contraInput.value)
+    );
+    drugInput.addEventListener("input", () => handleDrugType(drugInput.value));
+
+    drugInput.addEventListener("keyup", (e) => {
+      if (e.key === "Enter") {
+        runSearch();
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!contraInput.contains(e.target))
+        contraSuggestions.classList.add("hidden");
+      if (!drugInput.contains(e.target))
+        drugSuggestions.classList.add("hidden");
+    });
+
+    // --- 1. Handle typing in CONTRAINDICATION box ---
+    async function handleContraType(term) {
+      drugInput.value = "";
+      drugInput.disabled = true;
+      searchBtn.disabled = true;
+
+      term = term.trim().toLowerCase();
+      if (term.length < 2) {
+        contraSuggestions.classList.add("hidden");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `/api/contraindication-suggestions?term=${encodeURIComponent(term)}`
+        );
+        if (!response.ok) return;
+        const suggestions = await response.json();
+        displaySuggestions(suggestions, contraSuggestions, onContraClick);
+      } catch (error) {
+        console.error("Error fetching contra-suggestions:", error);
+      }
+    }
+
+    // --- 2. Handle typing in DRUG box ---
+    // ***** THIS FUNCTION IS NOW FIXED to use your server's endpoint *****
+    async function handleDrugType(term) {
+      const contraTerm = contraInput.value.trim().toLowerCase();
+      const drugTerm = term.trim().toLowerCase(); // Use a different variable name
+
+      if (drugTerm.length < 2) {
+        drugSuggestions.classList.add("hidden");
+        return;
+      }
+
+      // This function requires a contraindication to be selected first
+      if (contraTerm.length < 2) {
+        return;
+      }
+
+      try {
+        // This fetch URL now correctly matches your server code
+        const response = await fetch(
+          `/api/drug-suggestions-by-contra?contra=${encodeURIComponent(
+            contraTerm
+          )}&term=${encodeURIComponent(drugTerm)}`
+        );
+        if (!response.ok) return;
+        const suggestions = await response.json();
+        displaySuggestions(suggestions, drugSuggestions, onDrugClick);
+      } catch (error) {
+        console.error("Error fetching drug-suggestions:", error);
+      }
+    }
+    // ***** END OF FIX *****
+
+    // --- 3. Generic function to show suggestions ---
+    function displaySuggestions(suggestions, box, onClickHandler) {
+      box.innerHTML = "";
+      if (suggestions.length === 0) {
+        box.classList.add("hidden");
+        return;
+      }
+
+      suggestions.forEach((suggestion) => {
+        const div = document.createElement("div");
+        div.textContent = suggestion;
+        div.className = "suggestion-item";
+        div.addEventListener("click", () => onClickHandler(suggestion));
+        box.appendChild(div);
       });
+      box.classList.remove("hidden");
+    }
 
-      // --- 1. Handle typing in CONTRAINDICATION box ---
-      async function handleContraType(term) {
-        drugInput.value = "";
-        drugInput.disabled = true;
-        searchBtn.disabled = true;
+    // --- 4. Click handler for CONTRAINDICATION suggestion ---
+    function onContraClick(term) {
+      contraInput.value = term;
+      contraSuggestions.classList.add("hidden");
+      drugInput.disabled = false;
+      drugInput.placeholder = "Now, type a drug name";
+      drugInput.focus();
+    }
 
-        term = term.trim().toLowerCase();
-        if (term.length < 2) {
-          contraSuggestions.classList.add("hidden");
-          return;
-        }
+    // --- 5. Click handler for DRUG suggestion ---
+    function onDrugClick(term) {
+      drugInput.value = term;
+      drugSuggestions.classList.add("hidden");
+      searchBtn.disabled = false;
+      searchBtn.focus();
+    }
 
-        try {
-          const response = await fetch(
-            `http://localhost:3000/api/contraindication-suggestions?term=${encodeURIComponent(term)}`
-          );
-          if (!response.ok) return;
-          const suggestions = await response.json();
-          displaySuggestions(suggestions, contraSuggestions, onContraClick);
-        } catch (error) {
-          console.error("Error fetching contra-suggestions:", error);
-        }
+    // --- 6. Run the final search ---
+    async function runSearch() {
+      contraSuggestions.classList.add("hidden");
+      drugSuggestions.classList.add("hidden");
+
+      const contraTerm = contraInput.value.trim();
+      const drugName = drugInput.value.trim();
+
+      if (contraTerm.length < 3 || drugName.length < 2) {
+        alert("Please select both a contraindication and a drug.");
+        return;
       }
 
-      // --- 2. Handle typing in DRUG box ---
-      // ***** THIS FUNCTION IS NOW FIXED to use your server's endpoint *****
-      async function handleDrugType(term) {
-        const contraTerm = contraInput.value.trim().toLowerCase();
-        const drugTerm = term.trim().toLowerCase(); // Use a different variable name
+      loadingDiv.classList.remove("hidden");
+      resultsContainer.innerHTML = "";
+      noResultsDiv.classList.add("hidden");
 
-        if (drugTerm.length < 2) {
-          drugSuggestions.classList.add("hidden");
-          return;
-        }
-        
-        // This function requires a contraindication to be selected first
-        if (contraTerm.length < 2) {
-            return;
-        }
+      try {
+        const response = await fetch(
+          `/api/search-contraindications?contra=${encodeURIComponent(
+            contraTerm
+          )}&drug=${encodeURIComponent(drugName)}`
+        );
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
-        try {
-          // This fetch URL now correctly matches your server code
-          const response = await fetch(
-            `http://localhost:3000/api/drug-suggestions-by-contra?contra=${encodeURIComponent(
-              contraTerm
-            )}&term=${encodeURIComponent(drugTerm)}`
-          );
-          if (!response.ok) return;
-          const suggestions = await response.json();
-          displaySuggestions(suggestions, drugSuggestions, onDrugClick);
-        } catch (error) {
-          console.error("Error fetching drug-suggestions:", error);
+        const data = await response.json();
+        loadingDiv.classList.add("hidden");
+
+        if (data.length === 0) {
+          noResultsDiv.classList.remove("hidden");
+        } else {
+          displayResults(data);
         }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        loadingDiv.classList.add("hidden");
+        resultsContainer.innerHTML = `<p style="color: var(--color-red)">Could not fetch data. ${error.message}</p>`;
       }
-      // ***** END OF FIX *****
+    }
 
-      // --- 3. Generic function to show suggestions ---
-      function displaySuggestions(suggestions, box, onClickHandler) {
-        box.innerHTML = "";
-        if (suggestions.length === 0) {
-          box.classList.add("hidden");
-          return;
-        }
+    // --- 7. Display final results ---
+    function displayResults(data) {
+      resultsContainer.innerHTML = "";
+      data.forEach((drug) => {
+        const card = document.createElement("div");
+        card.className = "card";
 
-        suggestions.forEach((suggestion) => {
-          const div = document.createElement("div");
-          div.textContent = suggestion;
-          div.className = "suggestion-item";
-          div.addEventListener("click", () => onClickHandler(suggestion));
-          box.appendChild(div);
-        });
-        box.classList.remove("hidden");
-      }
-
-      // --- 4. Click handler for CONTRAINDICATION suggestion ---
-      function onContraClick(term) {
-        contraInput.value = term;
-        contraSuggestions.classList.add("hidden");
-        drugInput.disabled = false;
-        drugInput.placeholder = "Now, type a drug name";
-        drugInput.focus();
-      }
-
-      // --- 5. Click handler for DRUG suggestion ---
-      function onDrugClick(term) {
-        drugInput.value = term;
-        drugSuggestions.classList.add("hidden");
-        searchBtn.disabled = false;
-        searchBtn.focus();
-      }
-
-      // --- 6. Run the final search ---
-      async function runSearch() {
-        contraSuggestions.classList.add("hidden");
-        drugSuggestions.classList.add("hidden");
-
-        const contraTerm = contraInput.value.trim();
-        const drugName = drugInput.value.trim();
-
-        if (contraTerm.length < 3 || drugName.length < 2) {
-          alert("Please select both a contraindication and a drug.");
-          return;
-        }
-
-        loadingDiv.classList.remove("hidden");
-        resultsContainer.innerHTML = "";
-        noResultsDiv.classList.add("hidden");
-
-        try {
-          const response = await fetch(
-            `http://localhost:3000/api/search-contraindications?contra=${encodeURIComponent(
-              contraTerm
-            )}&drug=${encodeURIComponent(drugName)}`
-          );
-          if (!response.ok) throw new Error(`Server error: ${response.status}`);
-
-          const data = await response.json();
-          loadingDiv.classList.add("hidden");
-
-          if (data.length === 0) {
-            noResultsDiv.classList.remove("hidden");
-          } else {
-            displayResults(data);
-          }
-        } catch (error) {
-          console.error("Error fetching data:", error);
-          loadingDiv.classList.add("hidden");
-          resultsContainer.innerHTML = `<p style="color: var(--color-red)">Could not fetch data. ${error.message}</p>`;
-        }
-      }
-
-      // --- 7. Display final results ---
-      function displayResults(data) {
-        resultsContainer.innerHTML = "";
-        data.forEach((drug) => {
-          const card = document.createElement("div");
-          card.className = "card";
-
-          const createSection = (title, content) => {
-            if (content && content.toLowerCase() !== "false") {
-              return `
+        const createSection = (title, content) => {
+          if (content && content.toLowerCase() !== "false") {
+            return `
                 <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #e5e7eb;">
                     <strong style="color: var(--color-gray-900)">${title}:</strong>
                     <p style="color: var(--color-gray-700); margin: 0;">${content}</p>
                 </div>`;
-            }
-            return "";
-          };
+          }
+          return "";
+        };
 
-          const drugName = drug.drug_name || "N/A";
-          const manufacturer =
-            drug.manufacturer && drug.manufacturer.toLowerCase() !== "false"
-              ? drug.manufacturer
-              : "N/A";
+        const drugName = drug.drug_name || "N/A";
+        const manufacturer =
+          drug.manufacturer && drug.manufacturer.toLowerCase() !== "false"
+            ? drug.manufacturer
+            : "N/A";
 
-          card.innerHTML = `
+        card.innerHTML = `
             <h2 class="card-title" style="color: var(--color-blue-text)">${drugName}</h2>
             <p style="color: var(--color-gray-600); margin-top: -0.5rem; margin-bottom: 1rem;">${manufacturer}</p>
             <div style="display: grid; gap: 0.25rem;">
@@ -309,9 +276,10 @@
                 ${createSection("Side Effects", drug.side_effects)}
                 ${createSection("Warnings", drug.warnings)}
             </div>`;
-          resultsContainer.appendChild(card);
-        });
-      }
-    </script>
-  </body>
+        resultsContainer.appendChild(card);
+      });
+    }
+  </script>
+</body>
+
 </html>

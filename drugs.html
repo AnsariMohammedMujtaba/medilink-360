@@ -1,379 +1,345 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Drug List - MediLink360</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drug List - MediLink360</title>
 
-    <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <script src="navbar.js"></script>
-  </head>
-  <body>
-    <div id="navbar-placeholder"></div>
+  <link rel="stylesheet" href="style.css" />
 
-    <main>
-      <div class="container">
-        <h1 id="page-title" class="page-title capitalize">Loading...</h1>
+  <script src="navbar.js"></script>
+</head>
 
-        <div class="card" style="margin-bottom: 2rem">
-          <h2 class="card-title" style="margin-bottom: 1.5rem">
-            Filter Drugs
-          </h2>
-          <div class="grid-container grid-cols-3">
-            <div class="form-group">
-              <label for="filter-brand" class="form-label"
-                >Brand Name</label
-              >
-              <input
-                type="text"
-                id="filter-brand"
-                placeholder="Start typing brand..."
-                class="form-input"
-                autocomplete="off"
-              />
-              <div id="brand-suggestions" class="suggestions-box hidden"></div>
-            </div>
-            <div class="form-group">
-              <label for="filter-generic" class="form-label"
-                >Name (Generic)</label
-              >
-              <input
-                type="text"
-                id="filter-generic"
-                placeholder="Start typing name..."
-                class="form-input"
-                autocomplete="off"
-              />
-              <div id="generic-suggestions" class="suggestions-box hidden"></div>
-            </div>
-            <div class="form-group">
-              <label for="filter-mfg" class="form-label">Manufacturer</label>
-              <input
-                type="text"
-                id="filter-mfg"
-                placeholder="Start typing manufacturer..."
-                class="form-input"
-                autocomplete="off"
-              />
-              <div id="mfg-suggestions" class="suggestions-box hidden"></div>
-            </div>
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <main>
+    <div class="container">
+      <h1 id="page-title" class="page-title capitalize">Loading...</h1>
+
+      <div class="card" style="margin-bottom: 2rem">
+        <h2 class="card-title" style="margin-bottom: 1.5rem">
+          Filter Drugs
+        </h2>
+        <div class="grid-container grid-cols-3">
+          <div class="form-group">
+            <label for="filter-brand" class="form-label">Brand Name</label>
+            <input type="text" id="filter-brand" placeholder="Start typing brand..." class="form-input"
+              autocomplete="off" />
+            <div id="brand-suggestions" class="suggestions-box hidden"></div>
           </div>
-          <div
-            style="
+          <div class="form-group">
+            <label for="filter-generic" class="form-label">Name (Generic)</label>
+            <input type="text" id="filter-generic" placeholder="Start typing name..." class="form-input"
+              autocomplete="off" />
+            <div id="generic-suggestions" class="suggestions-box hidden"></div>
+          </div>
+          <div class="form-group">
+            <label for="filter-mfg" class="form-label">Manufacturer</label>
+            <input type="text" id="filter-mfg" placeholder="Start typing manufacturer..." class="form-input"
+              autocomplete="off" />
+            <div id="mfg-suggestions" class="suggestions-box hidden"></div>
+          </div>
+        </div>
+        <div style="
               display: flex;
               justify-content: flex-end;
               align-items: center;
               margin-top: 1.5rem;
               gap: 1rem;
-            "
-          >
-            <button id="clear-btn" class="btn btn-clear">Clear Filters</button>
-            <button id="search-btn" class="btn btn-primary">Search</button>
-          </div>
-        </div>
-
-        <div id="loading" class="loading-spinner hidden">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle
-              class="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="4"
-            ></circle>
-            <path
-              class="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-          <p style="margin-top: 1rem">Fetching Drug List...</p>
-        </div>
-
-        <div
-          id="drugs-list-container"
-          class="grid-container grid-cols-3"
-        ></div>
-
-        <div id="no-results" class="no-results hidden">
-          <h2 class="card-title">No Drugs Found</h2>
-          <p>No drugs matching your criteria were found.</p>
-        </div>
-
-        <div id="load-more-container" class="text-center hidden" style="margin-top: 2.5rem">
-          <button id="load-more-btn" class="btn btn-secondary">
-            Load More (20)
-          </button>
+            ">
+          <button id="clear-btn" class="btn btn-clear">Clear Filters</button>
+          <button id="search-btn" class="btn btn-primary">Search</button>
         </div>
       </div>
-    </main>
 
-    <script>
-      fetch("navbar.html")
-        .then((res) => res.text())
-        .then((data) => {
-          document.getElementById("navbar-placeholder").innerHTML = data;
-        })
-        .then(() => {
-          initNavbar();
+      <div id="loading" class="loading-spinner hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+          </path>
+        </svg>
+        <p style="margin-top: 1rem">Fetching Drug List...</p>
+      </div>
 
-          // --- Set Active Links for THIS page ---
-          const params = new URLSearchParams(window.location.search);
-          const drugType = params.get("type");
+      <div id="drugs-list-container" class="grid-container grid-cols-3"></div>
 
-          if (drugType) {
-            // 1. Set the main "Drug Types" dropdown as active
-            document.getElementById("drug-types-button")?.classList.add("active");
+      <div id="no-results" class="no-results hidden">
+        <h2 class="card-title">No Drugs Found</h2>
+        <p>No drugs matching your criteria were found.</p>
+      </div>
 
-            // 2. Set the specific sub-item as active (e.g., Allopathic)
-            document.getElementById(`nav-${drugType}`)?.classList.add("active");
-            document.getElementById(`mobile-nav-${drugType}`)?.classList.add("active");
-            document.getElementById("mobile-nav-types-header")?.classList.add("active");
-          }
-        });
-    </script>
+      <div id="load-more-container" class="text-center hidden" style="margin-top: 2.5rem">
+        <button id="load-more-btn" class="btn btn-secondary">
+          Load More (20)
+        </button>
+      </div>
+    </div>
+  </main>
 
-    <script>
-      // --- Global variables ---
-      let currentPage = 1;
-      let currentDrugType = "";
-      let currentFilters = { brandName: "", genericName: "", manufacturer: "" };
-      let allFilterData = {
-        brandNames: [],
-        genericNames: [],
-        manufacturers: [],
-      };
+  <script>
+    fetch("navbar.html")
+      .then((res) => res.text())
+      .then((data) => {
+        document.getElementById("navbar-placeholder").innerHTML = data;
+      })
+      .then(() => {
+        initNavbar();
 
-      // --- Get HTML Elements ---
-      const loadingDiv = document.getElementById("loading");
-      const resultsContainer = document.getElementById("drugs-list-container");
-      const noResultsDiv = document.getElementById("no-results");
-      const loadMoreContainer = document.getElementById("load-more-container");
-      const loadMoreBtn = document.getElementById("load-more-btn");
-      const searchBtn = document.getElementById("search-btn");
-      const clearBtn = document.getElementById("clear-btn");
-      const brandSuggestions = document.getElementById("brand-suggestions");
-      const genericSuggestions = document.getElementById("generic-suggestions");
-      const mfgSuggestions = document.getElementById("mfg-suggestions");
-      const brandInput = document.getElementById("filter-brand");
-      const genericInput = document.getElementById("filter-generic");
-      const mfgInput = document.getElementById("filter-mfg");
-
-      // --- 1. Main function on page load ---
-      document.addEventListener("DOMContentLoaded", () => {
+        // --- Set Active Links for THIS page ---
         const params = new URLSearchParams(window.location.search);
-        currentDrugType = (params.get("type") || "").toLowerCase().trim();
+        const drugType = params.get("type");
 
-        if (currentDrugType) {
-          const titleEl = document.getElementById("page-title");
-          titleEl.textContent = `${currentDrugType} Medicines`;
-          document.title = `${currentDrugType} Drugs - MediLink360`;
-          fetchFilterData();
-          fetchDrugs(true);
-        } else {
-          document.getElementById("page-title").textContent =
-            "No Type Specified";
+        if (drugType) {
+          // 1. Set the main "Drug Types" dropdown as active
+          document.getElementById("drug-types-button")?.classList.add("active");
+
+          // 2. Set the specific sub-item as active (e.g., Allopathic)
+          document.getElementById(`nav-${drugType}`)?.classList.add("active");
+          document.getElementById(`mobile-nav-${drugType}`)?.classList.add("active");
+          document.getElementById("mobile-nav-types-header")?.classList.add("active");
         }
-
-        // --- 2. Setup Event Listeners ---
-        searchBtn.addEventListener("click", handleSearch);
-        clearBtn.addEventListener("click", handleClearFilters);
-        loadMoreBtn.addEventListener("click", handleLoadMore);
-
-        brandInput.addEventListener("input", () =>
-          handleFilterType(brandInput.value, "brandNames", brandSuggestions)
-        );
-        genericInput.addEventListener("input", () =>
-          handleFilterType(genericInput.value,"genericNames",genericSuggestions)
-        );
-        mfgInput.addEventListener("input", () =>
-          handleFilterType(mfgInput.value, "manufacturers", mfgSuggestions)
-        );
-
-        document.addEventListener("click", (e) => {
-          if (!brandInput.contains(e.target))
-            brandSuggestions.classList.add("hidden");
-          if (!genericInput.contains(e.target))
-            genericSuggestions.classList.add("hidden");
-          if (!mfgInput.contains(e.target))
-            mfgSuggestions.classList.add("hidden");
-        });
       });
+  </script>
 
-      // --- 3. Handle a new search ---
-      function handleSearch() {
-        currentFilters.brandName = brandInput.value.trim();
-        currentFilters.genericName = genericInput.value.trim();
-        currentFilters.manufacturer = mfgInput.value.trim();
-        currentPage = 1;
+  <script>
+    // --- Global variables ---
+    let currentPage = 1;
+    let currentDrugType = "";
+    let currentFilters = { brandName: "", genericName: "", manufacturer: "" };
+    let allFilterData = {
+      brandNames: [],
+      genericNames: [],
+      manufacturers: [],
+    };
+
+    // --- Get HTML Elements ---
+    const loadingDiv = document.getElementById("loading");
+    const resultsContainer = document.getElementById("drugs-list-container");
+    const noResultsDiv = document.getElementById("no-results");
+    const loadMoreContainer = document.getElementById("load-more-container");
+    const loadMoreBtn = document.getElementById("load-more-btn");
+    const searchBtn = document.getElementById("search-btn");
+    const clearBtn = document.getElementById("clear-btn");
+    const brandSuggestions = document.getElementById("brand-suggestions");
+    const genericSuggestions = document.getElementById("generic-suggestions");
+    const mfgSuggestions = document.getElementById("mfg-suggestions");
+    const brandInput = document.getElementById("filter-brand");
+    const genericInput = document.getElementById("filter-generic");
+    const mfgInput = document.getElementById("filter-mfg");
+
+    // --- 1. Main function on page load ---
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      currentDrugType = (params.get("type") || "").toLowerCase().trim();
+
+      if (currentDrugType) {
+        const titleEl = document.getElementById("page-title");
+        titleEl.textContent = `${currentDrugType} Medicines`;
+        document.title = `${currentDrugType} Drugs - MediLink360`;
+        fetchFilterData();
         fetchDrugs(true);
+      } else {
+        document.getElementById("page-title").textContent =
+          "No Type Specified";
       }
 
-      // --- 4. Handle clearing filters ---
-      function handleClearFilters() {
-        brandInput.value = "";
-        genericInput.value = "";
-        mfgInput.value = "";
-        handleSearch();
+      // --- 2. Setup Event Listeners ---
+      searchBtn.addEventListener("click", handleSearch);
+      clearBtn.addEventListener("click", handleClearFilters);
+      loadMoreBtn.addEventListener("click", handleLoadMore);
+
+      brandInput.addEventListener("input", () =>
+        handleFilterType(brandInput.value, "brandNames", brandSuggestions)
+      );
+      genericInput.addEventListener("input", () =>
+        handleFilterType(genericInput.value, "genericNames", genericSuggestions)
+      );
+      mfgInput.addEventListener("input", () =>
+        handleFilterType(mfgInput.value, "manufacturers", mfgSuggestions)
+      );
+
+      document.addEventListener("click", (e) => {
+        if (!brandInput.contains(e.target))
+          brandSuggestions.classList.add("hidden");
+        if (!genericInput.contains(e.target))
+          genericSuggestions.classList.add("hidden");
+        if (!mfgInput.contains(e.target))
+          mfgSuggestions.classList.add("hidden");
+      });
+    });
+
+    // --- 3. Handle a new search ---
+    function handleSearch() {
+      currentFilters.brandName = brandInput.value.trim();
+      currentFilters.genericName = genericInput.value.trim();
+      currentFilters.manufacturer = mfgInput.value.trim();
+      currentPage = 1;
+      fetchDrugs(true);
+    }
+
+    // --- 4. Handle clearing filters ---
+    function handleClearFilters() {
+      brandInput.value = "";
+      genericInput.value = "";
+      mfgInput.value = "";
+      handleSearch();
+    }
+
+    // --- 5. Handle loading more ---
+    function handleLoadMore() {
+      currentPage++;
+      fetchDrugs(false);
+    }
+
+    // --- 6. Fetch drug data from API ---
+    async function fetchDrugs(clearResults = false) {
+      loadingDiv.classList.remove("hidden");
+      noResultsDiv.classList.add("hidden");
+      loadMoreContainer.classList.add("hidden");
+
+      if (clearResults) {
+        resultsContainer.innerHTML = "";
       }
 
-      // --- 5. Handle loading more ---
-      function handleLoadMore() {
-        currentPage++;
-        fetchDrugs(false);
-      }
+      let url = `/api/drugs-by-type?type=${currentDrugType}&page=${currentPage}`;
+      if (currentFilters.brandName)
+        url += `&brandName=${encodeURIComponent(currentFilters.brandName)}`;
+      if (currentFilters.genericName)
+        url += `&genericName=${encodeURIComponent(
+          currentFilters.genericName
+        )}`;
+      if (currentFilters.manufacturer)
+        url += `&manufacturer=${encodeURIComponent(
+          currentFilters.manufacturer
+        )}`;
 
-      // --- 6. Fetch drug data from API ---
-      async function fetchDrugs(clearResults = false) {
-        loadingDiv.classList.remove("hidden");
-        noResultsDiv.classList.add("hidden");
-        loadMoreContainer.classList.add("hidden");
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+        const data = await response.json();
 
-        if (clearResults) {
-          resultsContainer.innerHTML = "";
+        displayDrugs(data.drugs, resultsContainer);
+        loadingDiv.classList.add("hidden");
+
+        if (clearResults && data.totalMatches === 0) {
+          noResultsDiv.classList.remove("hidden");
         }
 
-        let url = `http://localhost:3000/api/drugs-by-type?type=${currentDrugType}&page=${currentPage}`;
-        if (currentFilters.brandName)
-          url += `&brandName=${encodeURIComponent(currentFilters.brandName)}`;
-        if (currentFilters.genericName)
-          url += `&genericName=${encodeURIComponent(
-            currentFilters.genericName
-          )}`;
-        if (currentFilters.manufacturer)
-          url += `&manufacturer=${encodeURIComponent(
-            currentFilters.manufacturer
-          )}`;
-
-        try {
-          const response = await fetch(url);
-          if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`);
-          }
-          const data = await response.json();
-
-          displayDrugs(data.drugs, resultsContainer);
-          loadingDiv.classList.add("hidden");
-
-          if (clearResults && data.totalMatches === 0) {
-            noResultsDiv.classList.remove("hidden");
-          }
-
-          const totalFetched = data.currentPage * data.pageSize;
-          if (totalFetched < data.totalMatches) {
-            loadMoreContainer.classList.remove("hidden");
-            loadMoreBtn.textContent = `Load More (${
-              data.totalMatches - totalFetched
+        const totalFetched = data.currentPage * data.pageSize;
+        if (totalFetched < data.totalMatches) {
+          loadMoreContainer.classList.remove("hidden");
+          loadMoreBtn.textContent = `Load More (${data.totalMatches - totalFetched
             } remaining)`;
-          } else {
-            loadMoreContainer.classList.add("hidden");
-          }
-        } catch (error) {
-          console.error("Error fetching drugs:", error);
-          loadingDiv.innerHTML = `<p style="color: var(--color-red)">Could not fetch drug data. ${error.message}</p>`;
+        } else {
+          loadMoreContainer.classList.add("hidden");
         }
+      } catch (error) {
+        console.error("Error fetching drugs:", error);
+        loadingDiv.innerHTML = `<p style="color: var(--color-red)">Could not fetch drug data. ${error.message}</p>`;
+      }
+    }
+
+    // --- 7. Fetch filter data ---
+    async function fetchFilterData() {
+      try {
+        const response = await fetch(
+          `/api/drug-filters?type=${currentDrugType}`
+        );
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+        allFilterData = await response.json();
+      } catch (error) {
+        console.error("Error fetching filter data:", error);
+      }
+    }
+
+    // --- 8. Handle typing in filter inputs ---
+    function handleFilterType(term, listKey, suggestionBox) {
+      term = term.toLowerCase();
+      suggestionBox.innerHTML = "";
+
+      if (term.length < 1) {
+        suggestionBox.classList.add("hidden");
+        return;
       }
 
-      // --- 7. Fetch filter data ---
-      async function fetchFilterData() {
-        try {
-          const response = await fetch(
-            `http://localhost:3000/api/drug-filters?type=${currentDrugType}`
-          );
-          if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`);
-          }
-          allFilterData = await response.json();
-        } catch (error) {
-          console.error("Error fetching filter data:", error);
-        }
+      const list = allFilterData[listKey];
+      if (!list) return;
+
+      const results = list
+        .filter((item) => item.toLowerCase().startsWith(term))
+        .slice(0, 10);
+
+      if (results.length === 0) {
+        suggestionBox.classList.add("hidden");
+        return;
       }
 
-      // --- 8. Handle typing in filter inputs ---
-      function handleFilterType(term, listKey, suggestionBox) {
-        term = term.toLowerCase();
-        suggestionBox.innerHTML = "";
+      displayFilterSuggestions(results, suggestionBox, listKey);
+      suggestionBox.classList.remove("hidden");
+    }
 
-        if (term.length < 1) {
+    // --- 9. Display the filter suggestions ---
+    function displayFilterSuggestions(results, suggestionBox, listKey) {
+      suggestionBox.innerHTML = "";
+
+      results.forEach((result) => {
+        const div = document.createElement("div");
+        div.textContent = result;
+        div.className = "suggestion-item";
+
+        div.addEventListener("click", () => {
+          if (listKey === "brandNames") brandInput.value = result;
+          if (listKey === "genericNames") genericInput.value = result;
+          if (listKey === "manufacturers") mfgInput.value = result;
+
           suggestionBox.classList.add("hidden");
-          return;
-        }
-
-        const list = allFilterData[listKey];
-        if (!list) return;
-
-        const results = list
-          .filter((item) => item.toLowerCase().startsWith(term))
-          .slice(0, 10);
-
-        if (results.length === 0) {
-          suggestionBox.classList.add("hidden");
-          return;
-        }
-
-        displayFilterSuggestions(results, suggestionBox, listKey);
-        suggestionBox.classList.remove("hidden");
-      }
-
-      // --- 9. Display the filter suggestions ---
-      function displayFilterSuggestions(results, suggestionBox, listKey) {
-        suggestionBox.innerHTML = "";
-
-        results.forEach((result) => {
-          const div = document.createElement("div");
-          div.textContent = result;
-          div.className = "suggestion-item";
-
-          div.addEventListener("click", () => {
-            if (listKey === "brandNames") brandInput.value = result;
-            if (listKey === "genericNames") genericInput.value = result;
-            if (listKey === "manufacturers") mfgInput.value = result;
-
-            suggestionBox.classList.add("hidden");
-          });
-
-          suggestionBox.appendChild(div);
         });
-      }
 
-      // --- 10. Display Drugs ---
-      function displayDrugs(drugs, container) {
-        drugs.forEach((drug) => {
-          const card = document.createElement("div");
-          card.className = "card";
+        suggestionBox.appendChild(div);
+      });
+    }
 
-          const brandName =
-            drug.brandName && drug.brandName.toLowerCase() !== "false"
-              ? drug.brandName
-              : "N/A";
-          const genericName =
-            drug.genericName && drug.genericName.toLowerCase() !== "false"
-              ? drug.genericName
-              : "N/A";
-          const manufacturer =
-            drug.manufacturer && drug.manufacturer.toLowerCase() !== "false"
-              ? drug.manufacturer
-              : "N/A";
+    // --- 10. Display Drugs ---
+    function displayDrugs(drugs, container) {
+      drugs.forEach((drug) => {
+        const card = document.createElement("div");
+        card.className = "card";
 
-          card.innerHTML = `
+        const brandName =
+          drug.brandName && drug.brandName.toLowerCase() !== "false"
+            ? drug.brandName
+            : "N/A";
+        const genericName =
+          drug.genericName && drug.genericName.toLowerCase() !== "false"
+            ? drug.genericName
+            : "N/A";
+        const manufacturer =
+          drug.manufacturer && drug.manufacturer.toLowerCase() !== "false"
+            ? drug.manufacturer
+            : "N/A";
+
+        card.innerHTML = `
             <div style="flex-grow: 1;">
               <h3 class="card-subtitle" style="color: var(--color-blue-text); font-size: 1.25rem;">${brandName}</h3>
               <p class="card-subtitle" style="margin-top: 0.25rem;">${genericName}</p>
             </div>
             <p style="color: var(--color-gray-500); font-size: 0.875rem; margin-top: 1rem; margin-bottom: 0;">${manufacturer}</p>
           `;
-          container.appendChild(card);
-        });
-      }
-    </script>
-  </body>
+        container.appendChild(card);
+      });
+    }
+  </script>
+</body>
+
 </html>
