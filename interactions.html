@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drug Interaction Checker</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="navbar.js"></script>
+  </head>
+  <body>
+    <div id="navbar-placeholder"></div>
+
+    <main
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 1rem;
+      "
+    >
+      <div class="card" style="max-width: 48rem; width: 100%">
+        <h1 class="card-title" style="color: var(--color-blue-text)">
+          My Drug Interaction Checker
+        </h1>
+        <p style="color: var(--color-gray-600); margin-top: -0.5rem; margin-bottom: 1.5rem">
+          Enter two drugs to check for interactions.
+        </p>
+
+        <div class="grid-container grid-cols-2" style="margin-bottom: 1.5rem">
+          <div class="form-group">
+            <label for="drug-1-input" class="form-label">Drug 1</label>
+            <input
+              type="text"
+              id="drug-1-input"
+              placeholder="Start typing (e.g., Warfarin)"
+              class="form-input"
+              autocomplete="off"
+            />
+            <div
+              id="suggestions-box-1"
+              class="suggestions-box hidden"
+            ></div>
+          </div>
+
+          <div class="form-group">
+            <label for="drug-2-input" class="form-label">Drug 2</label>
+            <input
+              type="text"
+              id="drug-2-input"
+              placeholder="Start typing (e.g., Aspirin)"
+              class="form-input"
+              autocomplete="off"
+            />
+            <div
+              id="suggestions-box-2"
+              class="suggestions-box hidden"
+            ></div>
+          </div>
+        </div>
+
+        <button id="check-btn" class="btn btn-green btn-full">
+          Check Interactions
+        </button>
+
+        <div id="results-area" class="results-area hidden">
+          <h2 class="results-title">Results</h2>
+          <div id="loading" class="loading-spinner hidden" style="box-shadow: none; padding: 1rem; background: var(--color-gray-100);">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <p style="margin-top: 0.5rem; margin-bottom: 0;">Checking...</p>
+          </div>
+          <div id="results-content" class="results-content"></div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      fetch("navbar.html")
+        .then((res) => res.text())
+        .then((data) => {
+          document.getElementById("navbar-placeholder").innerHTML = data;
+        })
+        .then(() => {
+          initNavbar();
+          document.getElementById("nav-interactions")?.classList.add("active");
+          document.getElementById("mobile-nav-interactions")?.classList.add("active");
+        });
+    </script>
+
+    <script>
+      const drug1Input = document.getElementById("drug-1-input");
+      const drug2Input = document.getElementById("drug-2-input");
+      const suggestionsBox1 = document.getElementById("suggestions-box-1");
+      const suggestionsBox2 = document.getElementById("suggestions-box-2");
+      const checkBtn = document.getElementById("check-btn");
+      const resultsArea = document.getElementById("results-area");
+      const loadingDiv = document.getElementById("loading");
+      const resultsContent = document.getElementById("results-content");
+      
+      drug1Input.addEventListener("input", () => handleType(drug1Input.value, 1));
+      drug2Input.addEventListener("input", () => handleType(drug2Input.value, 2));
+      checkBtn.addEventListener("click", findInteractions);
+      
+      document.addEventListener("click", (e) => {
+        if (!drug1Input.contains(e.target))
+          suggestionsBox1.classList.add("hidden");
+        if (!drug2Input.contains(e.target))
+          suggestionsBox2.classList.add("hidden");
+      });
+      
+      async function handleType(term, boxId) {
+        const searchTerm = term.trim().toLowerCase();
+        const suggestionsBox = boxId === 1 ? suggestionsBox1 : suggestionsBox2;
+        if (searchTerm.length < 2) {
+          suggestionsBox.classList.add("hidden");
+          suggestionsBox.innerHTML = "";
+          return;
+        }
+        try {
+          const response = await fetch(
+            `http://localhost:3000/search-drug?term=${encodeURIComponent(
+              searchTerm
+            )}`
+          );
+          if (!response.ok) return;
+          const suggestions = await response.json();
+          displaySuggestions(suggestions, boxId);
+        } catch (error) {
+          console.error("Error fetching suggestions:", error);
+          suggestionsBox.classList.add("hidden");
+        }
+      }
+      
+      function displaySuggestions(suggestions, boxId) {
+        const suggestionsBox = boxId === 1 ? suggestionsBox1 : suggestionsBox2;
+        const input = boxId === 1 ? drug1Input : drug2Input;
+        if (suggestions.length === 0) {
+          suggestionsBox.classList.add("hidden");
+          return;
+        }
+        suggestionsBox.innerHTML = "";
+        suggestions.forEach((suggestion) => {
+          const div = document.createElement("div");
+          div.textContent = suggestion;
+          div.className = "suggestion-item";
+          div.addEventListener("click", () => {
+            input.value = suggestion;
+            suggestionsBox.classList.add("hidden");
+            suggestionsBox.innerHTML = "";
+          });
+          suggestionsBox.appendChild(div);
+        });
+        suggestionsBox.classList.remove("hidden");
+      }
+      
+      async function findInteractions() {
+        const drug1 = drug1Input.value.trim();
+        const drug2 = drug2Input.value.trim();
+        if (drug1 === "" || drug2 === "") {
+          alert("Please select two drugs to check.");
+          return;
+        }
+        resultsArea.classList.remove("hidden");
+        resultsContent.classList.add("hidden");
+        loadingDiv.classList.remove("hidden");
+        checkBtn.disabled = true;
+        
+        try {
+          const drugQuery = [drug1, drug2].join(",");
+          const apiUrl = `http://localhost:3000/check-interactions?drugs=${encodeURIComponent(
+            drugQuery
+          )}`;
+          const response = await fetch(apiUrl);
+          if (!response.ok) {
+            throw new Error(
+              `Your server responded with an error (status: ${response.status})`
+            );
+          }
+          const data = await response.json();
+          displayResults(data);
+        } catch (error) {
+          console.error("Error checking interactions:", error);
+          resultsContent.innerHTML = `<p style="color: var(--color-red)">Could not connect to your local server. Is it running? (Error: ${error.message})</p>`;
+        }
+        
+        loadingDiv.classList.add("hidden");
+        resultsContent.classList.remove("hidden");
+        checkBtn.disabled = false;
+      }
+      
+      function displayResults(data) {
+        if (data && data.length > 0) {
+          let htmlOutput = "";
+          data.forEach((interaction) => {
+            const drug1 = interaction.drugs[0];
+            const drug2 = interaction.drugs[1];
+            const description = interaction.description;
+            htmlOutput += `
+              <div class="interaction-card">
+                  <strong>Interaction Found</strong>
+                  <p style="margin: 0.5rem 0;" class="capitalize">
+                      Between <strong style="color: #000">${drug1}</strong> and <strong style="color: #000">${drug2}</strong>
+                  </p>
+                  <p style="color: var(--color-gray-600); margin: 0;">${description}</p>
+              </div>
+            `;
+          });
+          resultsContent.innerHTML = htmlOutput;
+        } else {
+          resultsContent.innerHTML = `
+            <div class="no-interaction-card">
+                <strong>No Interactions Found</strong>
+                <p style="color: var(--color-gray-600); margin: 0.25rem 0 0 0;">No interactions were found between the selected drugs in your database.</p>
+            </div>
+          `;
+        }
+      }
+    </script>
+  </body>
+</html>

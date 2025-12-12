@@ -1,0 +1,135 @@
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-logo">
+      <a href="/">MediLink360</a>
+    </div>
+
+    <div class="nav-links">
+      <a href="/" id="nav-home" class="nav-link">Home</a>
+
+      <div class="nav-dropdown">
+        <button
+          type="button"
+          id="drug-types-button"
+          class="nav-link"
+          aria-expanded="false"
+        >
+          <span>Drug Types</span>
+          <svg
+            class="ml-1 h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+            style="display: inline; width: 1em; height: 1em; margin-left: 0.25rem"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+        <div
+          id="drug-types-menu"
+          class="dropdown-menu hidden"
+          aria-labelledby="drug-types-button"
+        >
+          <a
+            href="/drugs.html?type=allopathic"
+            id="nav-allopathic"
+            class="dropdown-link"
+            >Allopathic</a
+          >
+          <a
+            href="/drugs.html?type=ayurvedic"
+            id="nav-ayurvedic"
+            class="dropdown-link"
+            >Ayurvedic</a
+          >
+          <a
+            href="/drugs.html?type=homeopathic"
+            id="nav-homeopathic"
+            class="dropdown-link"
+            >Homeopathic</a
+          >
+        </div>
+      </div>
+
+      <a href="/interactions.html" id="nav-interactions" class="nav-link"
+        >Drug Interactions</a
+      >
+      <a
+        href="/contraindications.html"
+        id="nav-contraindications"
+        class="nav-link"
+        >Drug Contraindication</a
+      >
+      <a href="/about.html" id="nav-about" class="nav-link">About</a>
+    </div>
+
+    <div class="mobile-menu-button">
+      <button
+        type="button"
+        id="mobile-menu-button"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+      >
+        <span class="sr-only"></span>
+        <svg id="icon-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+        <svg id="icon-close" class="hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu hidden" id="mobile-menu">
+    <a href="/" id="mobile-nav-home" class="nav-link">Home</a>
+    <a href="/interactions.html" id="mobile-nav-interactions" class="nav-link"
+      >Drug Interactions</a
+    >
+    <a
+      href="/contraindications.html"
+      id="mobile-nav-contraindications"
+      class="nav-link"
+      >Drug Contraindication</a
+    >
+    <a href="/about.html" id="mobile-nav-about" class="nav-link">About</a>
+    <div class="pt-2">
+      <span id="mobile-nav-types-header" class="mobile-menu-header"
+        >Drug Types</span
+      >
+      <a
+        href="/drugs.html?type=allopathic"
+        id="mobile-nav-allopathic"
+        class="dropdown-link"
+        >Allopathic</a
+      >
+      <a
+        href="/drugs.html?type=ayurvedic"
+        id="mobile-nav-ayurvedic"
+        class="dropdown-link"
+        >Ayurvedic</a
+      >
+      <a
+        href="/drugs.html?type=homeopathic"
+        id="mobile-nav-homeopathic"
+        class="dropdown-link"
+        >Homeopathic</a
+      >
+    </div>
+  </div>
+</nav>

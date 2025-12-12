@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediLink360 - Home</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="navbar.js"></script>
+  </head>
+  <body>
+    <div id="navbar-placeholder"></div>
+
+    <header class="page-header">
+      <div class="container">
+        <h1 class="page-header-title">Welcome to MediLink360</h1>
+        <p class="page-header-subtitle">
+          Your comprehensive resource for medication safety and information.
+          Bridging the gap between knowledge and real-world usage.
+        </p>
+        <a href="/interactions.html" class="btn btn-white" style="margin-top: 2rem">
+          Check Drug Interactions
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <h2 class="section-title">What We Offer</h2>
+
+        <div class="grid-container grid-cols-3">
+          <div class="card card-hover text-center">
+            <h3 class="card-title">Drug Interactions</h3>
+            <p class="card-text">
+              Check for potential interactions between two or more medications to
+              ensure your safety.
+            </p>
+            <a href="/interactions.html" class="card-link"
+              >Start Checking &rarr;</a
+            >
+          </div>
+
+          <div class="card card-hover text-center">
+            <h3 class="card-title">Drug Contraindication</h3>
+            <p class="card-text">
+              Search for drugs based on specific conditions (e.g., pregnancy) to
+              see what's safe.
+            </p>
+            <a href="/contraindications.html" class="card-link"
+              >Search Now &rarr;</a
+            >
+          </div>
+
+          <div class="card card-hover text-center">
+            <h3 class="card-title">Drug Types</h3>
+            <p class="card-text">
+              Browse our database of Allopathic, Ayurvedic, and Homeopathic
+              medicines.
+            </p>
+            <a href="/drugs.html?type=allopathic" class="card-link"
+              >Browse Drugs &rarr;</a
+            >
+          </div>
+        </div>
+
+        <section style="margin-top: 6rem" class="text-center">
+          <h2 class="section-title" style="margin-bottom: 1rem">
+            Meet the Team
+          </h2>
+          <p
+            style="
+              font-size: 1.125rem;
+              color: var(--color-gray-600);
+              max-width: 42rem;
+              margin: 0 auto 2rem auto;
+            "
+          >
+            This project is built by a dedicated team of pharmacology and
+            engineering professionals.
+          </p>
+          <a href="/about.html" class="btn btn-primary">Learn More About Us</a>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      fetch("navbar.html")
+        .then((res) => res.text())
+        .then((data) => {
+          document.getElementById("navbar-placeholder").innerHTML = data;
+        })
+        .then(() => {
+          // This function is now loaded from navbar.js!
+          initNavbar();
+
+          // Set 'Home' as the active link
+          document.getElementById("nav-home")?.classList.add("active");
+          document.getElementById("mobile-nav-home")?.classList.add("active");
+        });
+    </script>
+  </body>
+</html>
