@@ -298,6 +298,21 @@ app.get('/api/drug-suggestions-by-contra', (req, res) => {
 
 // --- UPDATED: Code to serve your HTML pages ---
 
+// Serve navbar.html explicitly (needed for Vercel)
+app.get('/navbar.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'navbar.html'));
+});
+
+// Serve style.css explicitly (needed for Vercel)
+app.get('/style.css', (req, res) => {
+  res.sendFile(path.join(__dirname, 'style.css'));
+});
+
+// Serve navbar.js explicitly (needed for Vercel)
+app.get('/navbar.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'navbar.js'));
+});
+
 // 1. Home Page (index.html) - This is now the NEW homepage
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
